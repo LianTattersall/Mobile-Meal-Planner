@@ -9,16 +9,19 @@ export function getDates() {
     const month = now.getMonth();
     const date = now.getDate();
     const dateObj = new Date(year, month, date);
-    datesArr.push({ dates: getWeek(dateObj), month });
+    datesArr.push(getWeek(dateObj));
   }
   return datesArr;
 }
 
 function getWeek(sunDateObj) {
-  const datesOfWeek = [sunDateObj.getDate()];
-  for (let i = 0; i < 6; i++) {
+  const datesOfWeek = [];
+  for (let i = 0; i < 7; i++) {
+    const year = sunDateObj.getFullYear();
+    const month = sunDateObj.getMonth();
+    const date = sunDateObj.getDate();
+    datesOfWeek.push({ date, year, month });
     sunDateObj.setDate(sunDateObj.getDate() + 1);
-    datesOfWeek.push(sunDateObj.getDate());
   }
   return datesOfWeek;
 }

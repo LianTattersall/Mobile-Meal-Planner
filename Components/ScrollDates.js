@@ -1,7 +1,24 @@
-import { Text, StyleSheet, View, Dimensions, FlatList } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  Dimensions,
+  FlatList,
+  Pressable,
+} from "react-native";
 import { getDates } from "../utils/GetDates.mjs";
+import { useContext } from "react";
+import { SelectedDateContext } from "../Contexts/SelectedDateContext";
 
 export default function ScrollDates({ changeMonth }) {
+  const { selectedDate, setSelectedDate } = useContext(SelectedDateContext);
+
+  const changeDateHandler = (index, date, month, year) => {
+    setSelectedDate({ index, date, month, year });
+    changeMonth(month);
+  };
+  console.log(selectedDate);
+
   const dates = getDates();
   return (
     <FlatList
@@ -13,21 +30,31 @@ export default function ScrollDates({ changeMonth }) {
       data={dates}
       contentOffset={{ x: Dimensions.get("window").width * 7 }}
       onScroll={(data) => {
-        const index =
+        const weekIndex =
           data.nativeEvent.contentOffset.x / Dimensions.get("window").width;
-        if (Number.isInteger(index)) {
-          changeMonth(dates[index].month);
+        if (Number.isInteger(weekIndex)) {
+          const dayIndex = dates[weekIndex][selectedDate.index];
+          setSelectedDate({ index: selectedDate.index, ...dayIndex });
+          changeMonth(selectedDate.month);
         }
       }}
       scrollEventThrottle={1}
-      renderItem={({ item: { dates, month } }) => {
+      renderItem={({ item }) => {
         return (
           <View style={styles.calendarContainer}>
-            {dates.map((day, index) => {
+            {item.map(({ date, month, year }, i) => {
+              const backgroundColor =
+                i === selectedDate.index ? "#bcedcf" : "white";
               return (
-                <Text key={index} style={styles.text}>
-                  {day}
-                </Text>
+                <Pressable
+                  onPress={() => {
+                    changeDateHandler(i, date, month, year);
+                  }}
+                  key={i}
+                  style={[styles.textBox, { backgroundColor }]}
+                >
+                  <Text>{date}</Text>
+                </Pressable>
               );
             })}
           </View>
@@ -42,11 +69,13 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingTop: 10,
-    paddingBottom: 10,
   },
-  text: {
-    width: Dimensions.get("window").width / 7,
-    textAlign: "center",
+  textBox: {
+    width: (Dimensions.get("window").width / 7) * 0.8,
+    height: (Dimensions.get("window").width / 7) * 0.8,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 100,
+    overflow: "hidden",
   },
 });
