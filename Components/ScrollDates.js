@@ -17,7 +17,6 @@ export default function ScrollDates({ changeMonth }) {
     setSelectedDate({ index, date, month, year });
     changeMonth(month);
   };
-  console.log(selectedDate);
 
   const dates = getDates();
   return (

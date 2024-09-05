@@ -5,6 +5,7 @@ import ListsStack from "./ListsStack";
 import SignIn from "../Screens/SignIn";
 import { useContext, useState } from "react";
 import { LoggedIn } from "../Contexts/UserContext";
+import AuthStack from "./AuthStack";
 
 export default function TabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -30,7 +31,7 @@ export default function TabNavigator() {
           <Tab.Group>
             <Tab.Screen
               name="SignIn"
-              component={SignIn}
+              component={AuthStack}
               options={{ headerShown: false, tabBarStyle: { display: "none" } }}
             ></Tab.Screen>
           </Tab.Group>
