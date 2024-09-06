@@ -2,19 +2,20 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import CalendarStack from "./CalendarStack";
 import ListsStack from "./ListsStack";
-import SignIn from "../Screens/SignIn";
-import { useContext, useState } from "react";
-import { LoggedIn } from "../Contexts/UserContext";
+import { useContext } from "react";
+import { UserContext } from "../Contexts/UserContext";
 import AuthStack from "./AuthStack";
 
 export default function TabNavigator() {
   const Tab = createBottomTabNavigator();
-  const { loggedIn } = useContext(LoggedIn);
+  const {
+    user: { user_id },
+  } = useContext(UserContext);
 
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        {loggedIn ? (
+        {user_id ? (
           <Tab.Group>
             <Tab.Screen
               name="CalendarStack"

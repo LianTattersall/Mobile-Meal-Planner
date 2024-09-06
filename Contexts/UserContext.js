@@ -1,12 +1,12 @@
 import { createContext, useState } from "react";
 
-export const LoggedIn = createContext();
+export const UserContext = createContext();
 
-export const LoggedInProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(false);
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState({});
   return (
-    <LoggedIn.Provider value={{ loggedIn, setLoggedIn }}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
-    </LoggedIn.Provider>
+    </UserContext.Provider>
   );
 };

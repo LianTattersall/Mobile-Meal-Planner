@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import TabNavigator from "./Routes/TabNavigator";
-import { LoggedInProvider } from "./Contexts/UserContext";
+import { UserProvider } from "./Contexts/UserContext";
 
 export default function App() {
   return (
-    <LoggedInProvider>
+    <UserProvider>
       <TabNavigator />
-    </LoggedInProvider>
+    </UserProvider>
   );
 }
 
