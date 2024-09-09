@@ -22,3 +22,14 @@ export const postUserToCalendar = (user_id) => {
       console.log(err);
     });
 };
+
+export const getMealsForUserByDate = (user_id, date) => {
+  return mealPlannerApi
+    .get(`/users/${user_id}/calendar/${date}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

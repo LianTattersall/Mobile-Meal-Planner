@@ -12,7 +12,11 @@ export default function CalendarStack() {
   return (
     <SelectedDateProvider>
       <stack.Navigator initialRouteName="Calendar">
-        <stack.Screen name="Calendar" component={Calendar}></stack.Screen>
+        <stack.Screen
+          name="Calendar"
+          component={Calendar}
+          options={{ headerShown: false }}
+        ></stack.Screen>
         <stack.Screen
           name="Recipie"
           component={Recipie}

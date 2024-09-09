@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   month: {
+    fontSize: 18,
     paddingTop: 5,
   },
 });

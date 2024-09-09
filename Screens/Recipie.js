@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Recipie({ navigation, route }) {
   const { param } = route.params;
+  console.log(route.params);
   function pressHandler() {
     navigation.navigate("AddIngredients");
   }

@@ -5,6 +5,7 @@ import ListsStack from "./ListsStack";
 import { useContext } from "react";
 import { UserContext } from "../Contexts/UserContext";
 import AuthStack from "./AuthStack";
+import Settings from "../Screens/Settings";
 
 export default function TabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -27,6 +28,7 @@ export default function TabNavigator() {
               component={ListsStack}
               options={{ headerShown: false }}
             ></Tab.Screen>
+            <Tab.Screen name="Settings" component={Settings}></Tab.Screen>
           </Tab.Group>
         ) : (
           <Tab.Group>
