@@ -9,8 +9,8 @@ import MealCard from "../Components/MealCard";
 
 export default function Calendar({ navigation }) {
   const { user } = useContext(UserContext);
-  const { selectedDate } = useContext(SelectedDateContext);
-  const [meals, setMeals] = useState({});
+  const { selectedDate, meals, setMeals } = useContext(SelectedDateContext);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

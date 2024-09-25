@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-export default function MealCard({ meal, data, pressHandler }) {
-  const CardWithDate = (
+export default function MealCard({ meal, data, pressHandler, loading }) {
+  return (
     <TouchableOpacity
       style={styles.container}
       onPress={
@@ -17,27 +17,13 @@ export default function MealCard({ meal, data, pressHandler }) {
               pressHandler("Recipie", data.recipie_id);
             }
           : () => {
-              pressHandler("AddMeal");
+              pressHandler("AddMeal", meal);
             }
       }
     >
       <Text style={styles.header}>{meal}</Text>
       {data ? <Text>{data.recipie_name}</Text> : <Text>Add a meal</Text>}
     </TouchableOpacity>
-  );
-
-  const LoadingCard = (
-    <Animated.View
-      styles={[
-        styles.container,
-        {
-          backgroundColor: this.state.x.interpolate({
-            inputRange: [0, 300],
-            outputRange: ["rgba(255, 0, 0, 1)", "rgba(0, 255, 0, 1)"],
-          }),
-        },
-      ]}
-    ></Animated.View>
   );
 }
 

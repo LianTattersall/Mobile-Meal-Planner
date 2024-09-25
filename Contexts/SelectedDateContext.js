@@ -10,8 +10,11 @@ export const SelectedDateProvider = ({ children }) => {
     month: today.getMonth(),
     year: today.getFullYear(),
   });
+  const [meals, setMeals] = useState({});
   return (
-    <SelectedDateContext.Provider value={{ selectedDate, setSelectedDate }}>
+    <SelectedDateContext.Provider
+      value={{ selectedDate, setSelectedDate, meals, setMeals }}
+    >
       {children}
     </SelectedDateContext.Provider>
   );

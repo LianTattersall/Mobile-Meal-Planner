@@ -5,6 +5,7 @@ import Recipie from "../Screens/Recipie";
 import AddMeal from "../Screens/AddMeal";
 import AddIngredients from "../Screens/AddIngredients";
 import { SelectedDateProvider } from "../Contexts/SelectedDateContext";
+import SearchResults from "../Screens/SearchResults";
 
 const stack = createNativeStackNavigator();
 
@@ -20,7 +21,7 @@ export default function CalendarStack() {
         <stack.Screen
           name="Recipie"
           component={Recipie}
-          options={{ title: "recipie" }}
+          options={{ title: "" }}
         ></stack.Screen>
         <stack.Screen
           name="AddMeal"
@@ -31,6 +32,11 @@ export default function CalendarStack() {
           name="AddIngredients"
           component={AddIngredients}
           options={{ title: "Add Ingredients", presentation: "modal" }}
+        ></stack.Screen>
+        <stack.Screen
+          name="SearchResults"
+          component={SearchResults}
+          options={{ title: "Search Results" }}
         ></stack.Screen>
       </stack.Navigator>
     </SelectedDateProvider>

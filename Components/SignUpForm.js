@@ -45,12 +45,12 @@ export default function SignUpForm() {
             displayName: nameInput,
             photoURL: defaultProfilePic,
           });
-          return Promise.all([cred.user.uid, updateUser]);
+          return Promise.all([cred.user.uid, cred.user.email, updateUser]);
         })
         .then((data) => {
           return Promise.all([
             data[0],
-            postUser(data[0], nameInput, defaultProfilePic),
+            postUser(data[0], nameInput, defaultProfilePic, data[1]),
           ]);
         })
         .then((data) => {
