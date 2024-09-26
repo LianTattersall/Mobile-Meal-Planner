@@ -20,7 +20,7 @@ export default function Lists({ navigation }) {
     <View style={styles.container}>
       {userLists.map((list) => {
         return (
-          <TouchableOpacity key={list.list_id}>
+          <TouchableOpacity key={list.list_id} style={{ margin: 10 }}>
             <Text>{list.list_name}</Text>
           </TouchableOpacity>
         );

@@ -4,19 +4,35 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { getListsByUserId } from "../utils/api";
 import { UserContext } from "../Contexts/UserContext";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import RNPickerSelect from "react-native-picker-select";
+import { TouchableOpacity } from "react-native";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import db from "../connection";
+
+const colRef = collection(db, "users");
 
 export default function ({ ingredients }) {
   const { user } = useContext(UserContext);
   const [list, setList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [userLists, setUserLists] = useState([]);
+  const [denyModal, setDenyModal] = useState("");
 
   useEffect(() => {
     getListsByUserId(user.user_id).then(({ lists }) => {
-      console.log(lists);
       setUserLists(lists);
     });
   }, []);
+
+  useEffect(
+    () =>
+      onSnapshot(doc(colRef, user.user_id), (snapShot) => {
+        console.log(snapShot.data());
+        setUserLists(snapShot.data().lists);
+      }),
+    []
+  );
 
   function handleCheck(ing, isChecked) {
     if (isChecked) {
@@ -33,7 +49,14 @@ export default function ({ ingredients }) {
   }
 
   function handleSubmit() {
-    setModalVisible(true);
+    if (list.length !== 0) {
+      setModalVisible(true);
+    } else {
+      setDenyModal("Select some ingredients!");
+      setTimeout(() => {
+        setDenyModal("");
+      }, 6000);
+    }
   }
   return (
     <>
@@ -51,6 +74,7 @@ export default function ({ ingredients }) {
           );
         })}
       </View>
+      {denyModal ? <Text>Select some ingredients!</Text> : null}
       <Pressable style={styles.button} onPress={handleSubmit}>
         <Text>Add Ingredients to shopping list</Text>
       </Pressable>
@@ -59,15 +83,41 @@ export default function ({ ingredients }) {
           <View style={styles.modalView}>
             <View style={{ flexDirection: "row" }}>
               <View style={{ flex: 1 }}></View>
-              <Pressable
+              <AntDesign
+                name="close"
+                size={24}
+                color="black"
                 onPress={() => {
                   setModalVisible(false);
                 }}
-              >
-                <Text>Close</Text>
-              </Pressable>
+              />
             </View>
-            <Text>Add ingredients to which list:</Text>
+            {userLists.length !== 0 ? (
+              <>
+                <Text>Add ingredients to:</Text>
+                <RNPickerSelect
+                  onValueChange={(value) => {
+                    console.log(value);
+                  }}
+                  items={userLists.map((list) => {
+                    return { label: list.list_name, value: list.list_id };
+                  })}
+                  placeholder={{ label: "Select a list" }}
+                  style={{ height: 40 }}
+                ></RNPickerSelect>
+                <TouchableOpacity
+                  style={[styles.button, { marginTop: 20 }]}
+                  onPress={handleSubmit}
+                >
+                  <Text>Add Ingredients</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <Text>
+                Create a list to add your items to by pressing the MyLists tab
+                at the bottom
+              </Text>
+            )}
           </View>
         </View>
       </Modal>
@@ -95,7 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     padding: 15,
-    alignItems: "center",
+    alignItems: "start",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

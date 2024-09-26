@@ -109,7 +109,7 @@ export default function AddNewList({ navigation }) {
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
           <Text>Create</Text>
         </TouchableOpacity>
-        <Modal animationType="slide" transparent={true} visible={loading}>
+        <Modal animationType="slide" visible={loading}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text>Loading</Text>
