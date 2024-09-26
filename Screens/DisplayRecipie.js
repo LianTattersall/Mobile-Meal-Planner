@@ -11,18 +11,18 @@ import {
 import { getRecipieById } from "../utils/freeMealApi";
 import { formatIngredients } from "../utils/formatIngredients";
 import AddToCalendar from "../Components/AddToCalendar";
-import IngredientsSection from "../Components/IngredientsSection";
+import EditMeal from "../Components/EditMeal";
 
-export default function Recipie({ navigation, route }) {
-  const { recipie_id, freeMealApi, meal } = route.params;
+export default function DisplayRecipie({ navigation, route }) {
+  const { param, recipie_id, freeMealApi, meal } = route.params;
   const [recipie, setRecipie] = useState({});
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIgredients] = useState([]);
 
   useEffect(() => {
     if (freeMealApi) {
       getRecipieById(recipie_id).then((data) => {
         setRecipie(data.meals[0]);
-        setIngredients(formatIngredients(data.meals[0]));
+        setIgredients(formatIngredients(data.meals[0]));
       });
     }
   }, []);
@@ -38,15 +38,30 @@ export default function Recipie({ navigation, route }) {
           source={{ uri: recipie.strMealThumb }}
           style={styles.image}
         ></Image>
-        <IngredientsSection ingredients={ingredients} />
+        <View style={styles.ingredientsContainer}>
+          {ingredients.map((ing, index) => {
+            return (
+              <Text key={index} style={styles.ingredients}>
+                {ing}
+              </Text>
+            );
+          })}
+        </View>
+        <Pressable onPress={pressHandler} style={styles.button}>
+          <Text>Add Ingredients to shopping list</Text>
+        </Pressable>
         <Text style={styles.strInstructions}>{recipie.strInstructions}</Text>
-        <AddToCalendar
-          meal={meal}
-          recipie_id={recipie.idMeal}
-          my_recipie={false}
-          recipie_name={recipie.strMeal}
-          navigation={navigation}
-        />
+        {param === "fromCalendar" ? (
+          <EditMeal navigation={navigation} meal={meal} />
+        ) : (
+          <AddToCalendar
+            meal={meal}
+            recipie_id={recipie.idMeal}
+            my_recipie={false}
+            recipie_name={recipie.strMeal}
+            navigation={navigation}
+          />
+        )}
       </ScrollView>
     </View>
   );
@@ -79,7 +94,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     margin: 8,
   },
-
+  ingredientsContainer: {
+    width: Dimensions.get("window").width,
+    padding: 15,
+    marginLeft: 12,
+    alignItems: "flex-start",
+  },
+  ingredients: {
+    padding: 5,
+  },
   button: {
     backgroundColor: "#d9fffd",
     padding: 10,

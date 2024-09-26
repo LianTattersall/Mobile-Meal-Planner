@@ -7,14 +7,19 @@ import {
 } from "react-native";
 
 export default function MealCard({ meal, data, pressHandler, loading }) {
-  return (
+  const dataLoaded = (
     <TouchableOpacity
       style={styles.container}
       onPress={
         data
           ? () => {
-              console.log(data.recipie_id);
-              pressHandler("Recipie", data.recipie_id);
+              pressHandler(
+                "DisplayRecipie",
+                "fromCalendar",
+                data.recipie_id,
+                !data.my_recipie,
+                meal
+              );
             }
           : () => {
               pressHandler("AddMeal", meal);
@@ -25,6 +30,17 @@ export default function MealCard({ meal, data, pressHandler, loading }) {
       {data ? <Text>{data.recipie_name}</Text> : <Text>Add a meal</Text>}
     </TouchableOpacity>
   );
+
+  const loadingCard = (
+    <TouchableOpacity style={styles.container}>
+      <Text>Loading</Text>
+    </TouchableOpacity>
+  );
+  if (loading) {
+    return loadingCard;
+  } else {
+    return dataLoaded;
+  }
 }
 
 const styles = StyleSheet.create({

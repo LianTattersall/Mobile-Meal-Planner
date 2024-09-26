@@ -14,6 +14,7 @@ export default function Calendar({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     getMealsForUserByDate(user.user_id, dateObjToStr(selectedDate)).then(
       (data) => {
         setLoading(false);
@@ -22,13 +23,14 @@ export default function Calendar({ navigation }) {
     );
   }, [selectedDate]);
 
-  function pressHandler(route, param) {
-    if (param) {
+  function pressHandler(route, param, recipie_id, freeMealApi, meal) {
+    if (param && recipie_id) {
+      navigation.navigate(route, { param, recipie_id, freeMealApi, meal });
+    } else if (param) {
       navigation.navigate(route, { param });
-    } else {
-      navigation.navigate(route);
     }
   }
+
   return (
     <View style={styles.container}>
       <DatesBar />
