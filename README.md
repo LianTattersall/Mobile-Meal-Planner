@@ -1,8 +1,9 @@
 ## To run this project locally:
 
 1. fork and clone
-2. run the command `npm start`
-3. run on your simulator of choice
+2. run the command `npm install`
+3. run the command `npm start`
+4. run on your simulator of choice
 
 ## Backend
 
