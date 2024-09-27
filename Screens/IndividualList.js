@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
-import { getListById } from "../utils/api";
-import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
+import { deleteItem, getListById } from "../utils/api";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import db from "../connection";
+import { TouchableOpacity } from "react-native";
 
 const colRef = collection(db, "lists");
 
 export default function ({ navigation, route }) {
   const [items, setItems] = useState([]);
   const [listName, setListName] = useState("");
+  const [err, setErr] = useState(false);
+
   function renderItem({ item }) {
     return (
       <Swipeable
-        renderRightActions={(progress, dragX) => rightAction(progress, dragX)}
+        renderRightActions={() => rightAction(item.index)}
         friction={1}
       >
         <View style={styles.itemContainer}>
@@ -23,13 +26,33 @@ export default function ({ navigation, route }) {
     );
   }
 
-  function rightAction(progress, dragX) {
+  function handleDelete(index) {
+    const prevItems = [...items];
+    setItems((curr) => {
+      const filtered = curr.filter((item) => item.index !== index);
+      return filtered;
+    });
+    deleteItem(route.params.list_id, index).catch(() => {
+      setErr(true);
+      setTimeout(() => {
+        setErr(false);
+      }, 6000);
+      setItems(prevItems);
+    });
+  }
+
+  function rightAction(index) {
     return (
-      <View style={[styles.delete]}>
+      <TouchableOpacity
+        style={[styles.delete]}
+        onPress={() => {
+          handleDelete(index);
+        }}
+      >
         <Text style={{ lineHeight: 50, marginLeft: 5, marginRight: 5 }}>
           Delete Item
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -59,6 +82,11 @@ export default function ({ navigation, route }) {
   return (
     <View style={{ backgroundColor: "#fff", flex: 1 }}>
       <Text style={{ fontSize: 30, textAlign: "center" }}>{listName}</Text>
+      {err ? (
+        <Text style={{ marginLeft: "auto", marginRight: "auto", color: "red" }}>
+          An error occured
+        </Text>
+      ) : null}
       <FlatList data={items} renderItem={renderItem} />
     </View>
   );

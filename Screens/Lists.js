@@ -32,7 +32,7 @@ export default function Lists({ navigation }) {
         }}
       >
         <View>
-          <Text>Loading recipie</Text>
+          <Text>Loading Lists</Text>
         </View>
       </View>
     );

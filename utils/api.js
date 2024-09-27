@@ -109,3 +109,7 @@ export const getListById = (list_id) => {
       console.log(err);
     });
 };
+
+export const deleteItem = (list_id, index) => {
+  return mealPlannerApi.delete(`/lists/${list_id}/items/${index}`);
+};
