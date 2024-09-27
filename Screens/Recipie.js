@@ -17,18 +17,33 @@ export default function Recipie({ navigation, route }) {
   const { recipie_id, freeMealApi, meal } = route.params;
   const [recipie, setRecipie] = useState({});
   const [ingredients, setIngredients] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (freeMealApi) {
       getRecipieById(recipie_id).then((data) => {
+        setLoading(false);
         setRecipie(data.meals[0]);
         setIngredients(formatIngredients(data.meals[0]));
       });
     }
   }, []);
 
-  function pressHandler() {
-    navigation.navigate("AddIngredients");
+  if (loading) {
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+          backgroundColor: "#fff",
+        }}
+      >
+        <View>
+          <Text>Loading recipie</Text>
+        </View>
+      </View>
+    );
   }
   const freeMealApiRecipie = (
     <View style={styles.background}>

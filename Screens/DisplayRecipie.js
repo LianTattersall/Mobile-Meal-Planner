@@ -12,23 +12,39 @@ import { getRecipieById } from "../utils/freeMealApi";
 import { formatIngredients } from "../utils/formatIngredients";
 import AddToCalendar from "../Components/AddToCalendar";
 import EditMeal from "../Components/EditMeal";
+import IngredientsSection from "../Components/IngredientsSection";
 
 export default function DisplayRecipie({ navigation, route }) {
   const { param, recipie_id, freeMealApi, meal } = route.params;
   const [recipie, setRecipie] = useState({});
   const [ingredients, setIgredients] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (freeMealApi) {
       getRecipieById(recipie_id).then((data) => {
+        setLoading(false);
         setRecipie(data.meals[0]);
         setIgredients(formatIngredients(data.meals[0]));
       });
     }
   }, []);
 
-  function pressHandler() {
-    navigation.navigate("AddIngredients");
+  if (loading) {
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+          backgroundColor: "#fff",
+        }}
+      >
+        <View>
+          <Text>Loading recipie</Text>
+        </View>
+      </View>
+    );
   }
   const freeMealApiRecipie = (
     <View style={styles.background}>
@@ -38,18 +54,7 @@ export default function DisplayRecipie({ navigation, route }) {
           source={{ uri: recipie.strMealThumb }}
           style={styles.image}
         ></Image>
-        <View style={styles.ingredientsContainer}>
-          {ingredients.map((ing, index) => {
-            return (
-              <Text key={index} style={styles.ingredients}>
-                {ing}
-              </Text>
-            );
-          })}
-        </View>
-        <Pressable onPress={pressHandler} style={styles.button}>
-          <Text>Add Ingredients to shopping list</Text>
-        </Pressable>
+        <IngredientsSection ingredients={ingredients} />
         <Text style={styles.strInstructions}>{recipie.strInstructions}</Text>
         {param === "fromCalendar" ? (
           <EditMeal navigation={navigation} meal={meal} />

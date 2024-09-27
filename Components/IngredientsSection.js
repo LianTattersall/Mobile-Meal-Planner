@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Dimensions, Modal } from "react-native";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { getListsByUserId } from "../utils/api";
+import { getListsByUserId, postItemsToList } from "../utils/api";
 import { UserContext } from "../Contexts/UserContext";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import RNPickerSelect from "react-native-picker-select";
@@ -18,6 +18,8 @@ export default function ({ ingredients }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [userLists, setUserLists] = useState([]);
   const [denyModal, setDenyModal] = useState("");
+  const [selectedList, setSelectedList] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getListsByUserId(user.user_id).then(({ lists }) => {
@@ -28,7 +30,6 @@ export default function ({ ingredients }) {
   useEffect(
     () =>
       onSnapshot(doc(colRef, user.user_id), (snapShot) => {
-        console.log(snapShot.data());
         setUserLists(snapShot.data().lists);
       }),
     []
@@ -48,7 +49,7 @@ export default function ({ ingredients }) {
     }
   }
 
-  function handleSubmit() {
+  function openModal() {
     if (list.length !== 0) {
       setModalVisible(true);
     } else {
@@ -58,6 +59,15 @@ export default function ({ ingredients }) {
       }, 6000);
     }
   }
+
+  function handleSubmit() {
+    setLoading(true);
+    postItemsToList(selectedList, list).then(() => {
+      setLoading(false);
+      setModalVisible(false);
+    });
+  }
+
   return (
     <>
       <View style={styles.ingredientsContainer}>
@@ -75,7 +85,7 @@ export default function ({ ingredients }) {
         })}
       </View>
       {denyModal ? <Text>Select some ingredients!</Text> : null}
-      <Pressable style={styles.button} onPress={handleSubmit}>
+      <Pressable style={styles.button} onPress={openModal}>
         <Text>Add Ingredients to shopping list</Text>
       </Pressable>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -97,7 +107,7 @@ export default function ({ ingredients }) {
                 <Text>Add ingredients to:</Text>
                 <RNPickerSelect
                   onValueChange={(value) => {
-                    console.log(value);
+                    setSelectedList(value);
                   }}
                   items={userLists.map((list) => {
                     return { label: list.list_name, value: list.list_id };

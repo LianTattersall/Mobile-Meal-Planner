@@ -87,3 +87,25 @@ export const addListToUser = (user_id, list_id, list_name) => {
       return data;
     });
 };
+
+export const postItemsToList = (list_id, items) => {
+  return mealPlannerApi
+    .post(`/lists/${list_id}/items`, { items })
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const getListById = (list_id) => {
+  return mealPlannerApi
+    .get(`/lists/${list_id}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
