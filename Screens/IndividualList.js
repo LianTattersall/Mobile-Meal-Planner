@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { getListById } from "../utils/api";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import db from "../connection";
+
+const colRef = collection(db, "lists");
 
 export default function ({ navigation, route }) {
   const [items, setItems] = useState([]);
@@ -23,14 +27,15 @@ export default function ({ navigation, route }) {
     return (
       <View style={[styles.delete]}>
         <Text style={{ lineHeight: 50, marginLeft: 5, marginRight: 5 }}>
-          Delete List
+          Delete Item
         </Text>
       </View>
     );
   }
+
   useEffect(() => {
     getListById(route.params.list_id).then(({ list }) => {
-      setListName(list.listName);
+      setListName(list.list_name);
       setItems(
         list.items.map((item, index) => {
           return { item, index };
@@ -39,9 +44,21 @@ export default function ({ navigation, route }) {
     });
   }, []);
 
+  useEffect(
+    () =>
+      onSnapshot(doc(colRef, route.params.list_id), (snapShot) => {
+        setItems(
+          snapShot.data().items.map((item, index) => {
+            return { item, index };
+          })
+        );
+      }),
+    []
+  );
+
   return (
     <View style={{ backgroundColor: "#fff", flex: 1 }}>
-      <Text>{listName}</Text>
+      <Text style={{ fontSize: 30, textAlign: "center" }}>{listName}</Text>
       <FlatList data={items} renderItem={renderItem} />
     </View>
   );
