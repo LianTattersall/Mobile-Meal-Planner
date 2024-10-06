@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import {
+  FlatList,
   Keyboard,
   Modal,
   TouchableOpacity,
@@ -11,6 +12,7 @@ import UserProfileBar from "../Components/UserProfileBar";
 import DisplayNameEmail from "../Components/DisplayNameEmail";
 import { UserContext } from "../Contexts/UserContext";
 import { ListsContext } from "../Contexts/ListsContext";
+import formatUserData from "../utils/formatUserData";
 
 export default function AddNewList({ navigation }) {
   const { user } = useContext(UserContext);
@@ -98,14 +100,18 @@ export default function AddNewList({ navigation }) {
           }}
           value={searchTerm}
         ></TextInput>
-        {searchResults.map((user) => (
-          <UserProfileBar
-            setAddedPeople={setAddedPeople}
-            setSearchResults={setSearchResults}
-            user={user}
-            key={user.user_id}
-          />
-        ))}
+        <FlatList
+          data={searchResults}
+          renderItem={({ item }) => (
+            <UserProfileBar
+              setAddedPeople={setAddedPeople}
+              setSearchResults={setSearchResults}
+              user={item}
+              key={item.user_id}
+            />
+          )}
+        />
+
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
           <Text>Create</Text>
         </TouchableOpacity>
@@ -136,6 +142,7 @@ const styles = StyleSheet.create({
     width: "85%",
     height: 25,
     padding: 3,
+    borderRadius: 4,
   },
   labels: {
     margin: 15,

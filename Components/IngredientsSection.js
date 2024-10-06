@@ -68,6 +68,35 @@ export default function ({ ingredients }) {
     });
   }
 
+  const selectListModalContent = (
+    <>
+      <Text>Add ingredients to:</Text>
+      <RNPickerSelect
+        onValueChange={(value) => {
+          setSelectedList(value);
+        }}
+        items={userLists.map((list) => {
+          return { label: list.list_name, value: list.list_id };
+        })}
+        placeholder={{ label: "Select a list" }}
+        style={{ height: 40 }}
+      ></RNPickerSelect>
+      <TouchableOpacity
+        style={[styles.button, { marginTop: 20 }]}
+        onPress={handleSubmit}
+      >
+        <Text>Add Ingredients</Text>
+      </TouchableOpacity>
+    </>
+  );
+
+  const loadingModalContent = (
+    <>
+      <Text>Loading</Text>
+    </>
+  );
+
+  const modalContent = loading ? loadingModalContent : selectListModalContent;
   return (
     <>
       <View style={styles.ingredientsContainer}>
@@ -103,25 +132,7 @@ export default function ({ ingredients }) {
               />
             </View>
             {userLists.length !== 0 ? (
-              <>
-                <Text>Add ingredients to:</Text>
-                <RNPickerSelect
-                  onValueChange={(value) => {
-                    setSelectedList(value);
-                  }}
-                  items={userLists.map((list) => {
-                    return { label: list.list_name, value: list.list_id };
-                  })}
-                  placeholder={{ label: "Select a list" }}
-                  style={{ height: 40 }}
-                ></RNPickerSelect>
-                <TouchableOpacity
-                  style={[styles.button, { marginTop: 20 }]}
-                  onPress={handleSubmit}
-                >
-                  <Text>Add Ingredients</Text>
-                </TouchableOpacity>
-              </>
+              modalContent
             ) : (
               <Text>
                 Create a list to add your items to by pressing the MyLists tab

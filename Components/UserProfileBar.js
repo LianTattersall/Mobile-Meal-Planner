@@ -1,6 +1,23 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { addUserToList } from "../utils/api";
 
-export default function ({ user, setAddedPeople, setSearchResults }) {
+export default function ({
+  user,
+  setAddedPeople,
+  setSearchResults,
+  listInfoModal,
+  setPeople,
+  list_id,
+  people,
+}) {
   function handlePress() {
     setAddedPeople((curr) => {
       curr.push(user);
@@ -13,8 +30,38 @@ export default function ({ user, setAddedPeople, setSearchResults }) {
       return filteredRes;
     });
   }
+
+  function AddPersonToExistingList() {
+    const peopleBefore = JSON.parse(JSON.stringify(people));
+    setPeople((curr) => {
+      const addedPerson = JSON.parse(JSON.stringify(curr));
+      addedPerson.push({
+        user_id: user.user_id,
+        display_name: user.display_name,
+      });
+      return addedPerson;
+    });
+    addUserToList(list_id, user.user_id, user.display_name).catch(() => {
+      setPeople(peopleBefore);
+    });
+  }
+
+  function handlePressInfoModal() {
+    Alert.alert(
+      "Add new user to list",
+      `Do you want to add ${user.display_name} to this list?`,
+      [
+        { text: "yes", onPress: AddPersonToExistingList },
+        { text: "no", onPress: () => {} },
+      ]
+    );
+  }
+
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={listInfoModal ? handlePressInfoModal : handlePress}
+    >
       <View>
         <Image source={{ uri: user.avatar_url }} style={styles.image}></Image>
       </View>

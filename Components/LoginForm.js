@@ -12,6 +12,7 @@ import {
 import auth from "../firebaseConfig";
 import { UserContext } from "../Contexts/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserById } from "../utils/api";
 
 export default function () {
   const { setUser } = useContext(UserContext);
@@ -30,11 +31,11 @@ export default function () {
     setLoading(true);
     return signInWithEmailAndPassword(auth, emailInput, passwordInput)
       .then((cred) => {
-        const userDetails = {
-          user_id: cred.user.uid,
-          display_name: cred.user.displayName,
-          avatar_url: cred.user.photoURL,
-        };
+        return Promise.all([getUserById(cred.user.uid), cred.user.uid]);
+      })
+      .then((data) => {
+        const userDetails = data[0].user;
+        userDetails.user_id = data[1];
         setUser(userDetails);
         return AsyncStorage.setItem("user", JSON.stringify(userDetails));
       })

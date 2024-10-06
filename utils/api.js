@@ -113,3 +113,36 @@ export const getListById = (list_id) => {
 export const deleteItem = (list_id, index) => {
   return mealPlannerApi.delete(`/lists/${list_id}/items/${index}`);
 };
+
+export const patchUserPicture = (user_id, avatar_url) => {
+  return mealPlannerApi
+    .patch(`/users/${user_id}`, { avatar_url })
+    .then(({ data }) => {
+      return data;
+    });
+};
+
+export const getUserById = (user_id) => {
+  return mealPlannerApi.get(`/users/${user_id}`).then(({ data }) => {
+    return data;
+  });
+};
+
+export const deleteAllItems = (list_id) => {
+  return mealPlannerApi.delete(`/lists/${list_id}/items`);
+};
+
+export const removeListFromUser = (user_id, list_id) => {
+  return mealPlannerApi.delete(`/users/${user_id}/lists/${list_id}`);
+};
+
+export const addUserToList = (list_id, user_id, display_name) => {
+  return mealPlannerApi
+    .post(`/lists/${list_id}/people`, {
+      user_id,
+      display_name,
+    })
+    .then(({ data }) => {
+      return data;
+    });
+};

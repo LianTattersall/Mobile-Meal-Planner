@@ -5,6 +5,10 @@ import { UserContext } from "../Contexts/UserContext";
 import AddNewListButton from "../Components/AddNewListButton";
 import { ListsContext } from "../Contexts/ListsContext";
 import { TouchableOpacity } from "react-native";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import db from "../connection";
+
+const colRef = collection(db, "users");
 
 export default function Lists({ navigation }) {
   const { user } = useContext(UserContext);
@@ -17,6 +21,14 @@ export default function Lists({ navigation }) {
       setUserLists(lists);
     });
   }, []);
+
+  useEffect(
+    () =>
+      onSnapshot(doc(colRef, user.user_id), (snapShot) => {
+        setUserLists(snapShot.data().lists);
+      }),
+    []
+  );
 
   const handlePress = (list_id) => {
     navigation.navigate("IndividualList", { list_id });

@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { UserContext } from "../Contexts/UserContext";
 import AuthStack from "./AuthStack";
 import Settings from "../Screens/Settings";
+import RecipiesStack from "./RecipiesStack";
 
 export default function TabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -26,6 +27,11 @@ export default function TabNavigator() {
             <Tab.Screen
               name="MyLists"
               component={ListsStack}
+              options={{ headerShown: false }}
+            ></Tab.Screen>
+            <Tab.Screen
+              name="MyRecipies"
+              component={RecipiesStack}
               options={{ headerShown: false }}
             ></Tab.Screen>
             <Tab.Screen name="Settings" component={Settings}></Tab.Screen>

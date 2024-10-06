@@ -13,6 +13,7 @@ import { UserContext } from "../Contexts/UserContext";
 import auth from "../firebaseConfig";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { postUser, postUserToCalendar } from "../utils/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const defaultProfilePic =
   "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg";
@@ -62,6 +63,7 @@ export default function SignUpForm() {
             display_name: nameInput,
             avatar_url: defaultProfilePic,
           });
+          return AsyncStorage.setItem("user", JSON.stringify(userDetails));
         })
         // then post user to calendar
         .catch((err) => {
