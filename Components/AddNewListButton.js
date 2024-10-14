@@ -1,13 +1,13 @@
 import { TouchableOpacity } from "react-native";
 import { StyleSheet, Text } from "react-native";
 
-export default function ({ user_id, navigation }) {
+export default function ({ user_id, navigation, text, route }) {
   function handlePress() {
-    navigation.navigate("AddNewList", { user_id });
+    navigation.navigate(route, { user_id });
   }
   return (
     <TouchableOpacity style={styles.button} onPress={handlePress}>
-      <Text>Add a new list</Text>
+      <Text>{text}</Text>
     </TouchableOpacity>
   );
 }

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { addUserToList } from "../utils/api";
+import { addListToUser, addUserToList, getListById } from "../utils/api";
 
 export default function ({
   user,
@@ -41,9 +41,16 @@ export default function ({
       });
       return addedPerson;
     });
-    addUserToList(list_id, user.user_id, user.display_name).catch(() => {
-      setPeople(peopleBefore);
-    });
+    addUserToList(list_id, user.user_id, user.display_name)
+      .then((data) => {
+        return getListById(list_id);
+      })
+      .then(({ list }) => {
+        addListToUser(user.user_id, list_id, list.list_name);
+      })
+      .catch(() => {
+        setPeople(peopleBefore);
+      });
   }
 
   function handlePressInfoModal() {

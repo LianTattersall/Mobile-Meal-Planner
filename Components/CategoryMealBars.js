@@ -1,7 +1,14 @@
 import { TouchableOpacity, View } from "react-native";
 import { FlatList, Image, StyleSheet, Text } from "react-native";
 
-export default function ({ data, navigation, meal, loading, edit }) {
+export default function ({
+  data,
+  navigation,
+  meal,
+  loading,
+  edit,
+  usersRecipies,
+}) {
   function handlePress(recipie_id) {
     navigation.navigate("Recipie", { recipie_id, freeMealApi: true, meal });
   }
@@ -17,6 +24,25 @@ export default function ({ data, navigation, meal, loading, edit }) {
     );
   }
 
+  function renderUserRecipie({ item: { recipie } }) {
+    return (
+      <TouchableOpacity
+        style={styles.recipieContainer}
+        onPress={() => {
+          navigation.navigate("Recipie", {
+            recipie_id: recipie.recipie_id,
+            freeMealApi: false,
+            meal,
+          });
+        }}
+      >
+        <Image source={{ uri: recipie.image_url }} style={styles.image}></Image>
+        <Text style={{ marginTop: 10, fontSize: 16 }}>
+          {recipie.recipie_name}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -25,7 +51,11 @@ export default function ({ data, navigation, meal, loading, edit }) {
     );
   }
   return (
-    <FlatList horizontal={true} data={data} renderItem={renderItem}></FlatList>
+    <FlatList
+      horizontal={true}
+      data={data}
+      renderItem={usersRecipies ? renderUserRecipie : renderItem}
+    ></FlatList>
   );
 }
 

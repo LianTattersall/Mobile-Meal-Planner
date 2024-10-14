@@ -64,7 +64,12 @@ export default function Lists({ navigation }) {
           </TouchableOpacity>
         );
       })}
-      <AddNewListButton navigation={navigation} user_id={user.user_id} />
+      <AddNewListButton
+        navigation={navigation}
+        user_id={user.user_id}
+        text={"Add a new list"}
+        route={"AddNewList"}
+      />
     </View>
   );
 }

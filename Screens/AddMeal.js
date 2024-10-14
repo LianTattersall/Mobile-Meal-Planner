@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -10,6 +10,8 @@ import {
 import { getMealsByCategory } from "../utils/freeMealApi";
 import CategoryMealBars from "../Components/CategoryMealBars";
 import SearchBar from "../Components/SearchBar";
+import { getUserRecipieById, getUsersRecipies } from "../utils/api";
+import { UserContext } from "../Contexts/UserContext";
 
 export default function AddMeal({ route, navigation }) {
   const [pastaDishes, setPastaDishes] = useState([]);
@@ -22,8 +24,25 @@ export default function AddMeal({ route, navigation }) {
   const [starter, setStarter] = useState([]);
   const [seafood, setSeafood] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingUserRecipies, setLoadingUserRecipies] = useState(true);
+  const [userRecipies, setUserRecipies] = useState([]);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
+    getUsersRecipies(user.user_id)
+      .then(({ recipies }) => {
+        recipies = recipies.map((recipie) =>
+          getUserRecipieById(recipie.recipie_id)
+        );
+        return Promise.all(recipies);
+      })
+      .then((data) => {
+        setLoadingUserRecipies(false);
+        setUserRecipies(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     if (route.params.param === "Lunch") {
       getMealsByCategory("Pasta")
         .then(({ meals }) => {
@@ -93,6 +112,18 @@ export default function AddMeal({ route, navigation }) {
           navigation={navigation}
         ></SearchBar>
         <TextInput style={styles.searchBar}></TextInput>
+        {userRecipies.length !== 0 ? (
+          <>
+            <Text style={styles.header}>My Recipies</Text>
+            <CategoryMealBars
+              loading={loadingUserRecipies}
+              meal={route.params.param}
+              navigation={navigation}
+              data={userRecipies}
+              usersRecipies={true}
+            ></CategoryMealBars>
+          </>
+        ) : null}
         <Text style={styles.header}>Pasta</Text>
         <CategoryMealBars
           loading={loading}
@@ -126,6 +157,18 @@ export default function AddMeal({ route, navigation }) {
           navigation={navigation}
         ></SearchBar>
         <TextInput style={styles.searchBar}></TextInput>
+        {userRecipies.length !== 0 ? (
+          <>
+            <Text style={styles.header}>My Recipies</Text>
+            <CategoryMealBars
+              loading={loadingUserRecipies}
+              meal={route.params.param}
+              navigation={navigation}
+              data={userRecipies}
+              usersRecipies={true}
+            ></CategoryMealBars>
+          </>
+        ) : null}
         <Text style={styles.header}>Pasta</Text>
         <CategoryMealBars
           loading={loading}
@@ -165,6 +208,18 @@ export default function AddMeal({ route, navigation }) {
           meal={route.params.param}
           navigation={navigation}
         ></SearchBar>
+        {userRecipies.length !== 0 ? (
+          <>
+            <Text style={styles.header}>My Recipies</Text>
+            <CategoryMealBars
+              loading={loadingUserRecipies}
+              meal={route.params.param}
+              navigation={navigation}
+              data={userRecipies}
+              usersRecipies={true}
+            ></CategoryMealBars>
+          </>
+        ) : null}
         <Text style={styles.header}>Breakfast</Text>
         <CategoryMealBars
           loading={loading}
@@ -183,6 +238,18 @@ export default function AddMeal({ route, navigation }) {
           meal={route.params.param}
           navigation={navigation}
         ></SearchBar>
+        {userRecipies.length !== 0 ? (
+          <>
+            <Text style={styles.header}>My Recipies</Text>
+            <CategoryMealBars
+              loading={loadingUserRecipies}
+              meal={route.params.param}
+              navigation={navigation}
+              data={userRecipies}
+              usersRecipies={true}
+            ></CategoryMealBars>
+          </>
+        ) : null}
         <Text style={styles.header}>Desserts</Text>
         <CategoryMealBars
           loading={loading}

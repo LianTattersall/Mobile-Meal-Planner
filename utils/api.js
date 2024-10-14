@@ -146,3 +146,56 @@ export const addUserToList = (list_id, user_id, display_name) => {
       return data;
     });
 };
+
+export const postRecipie = (
+  recipie_name,
+  ingredients,
+  method,
+  author,
+  image_url
+) => {
+  return mealPlannerApi
+    .post(`/recipies`, {
+      recipie_name,
+      ingredients,
+      method,
+      author,
+      image_url,
+    })
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      console.log(err.response);
+      console.log({
+        recipie_name,
+        ingredients,
+        method,
+        author,
+        image_url,
+      });
+    });
+};
+
+export const postRecipieToUser = (user_id, recipie_id, recipie_name) => {
+  return mealPlannerApi
+    .post(`users/${user_id}/recipies`, {
+      recipie_id,
+      recipie_name,
+    })
+    .then(({ data }) => {
+      return data;
+    });
+};
+
+export const getUsersRecipies = (user_id) => {
+  return mealPlannerApi.get(`/users/${user_id}/recipies`).then(({ data }) => {
+    return data;
+  });
+};
+
+export const getUserRecipieById = (recipie_id) => {
+  return mealPlannerApi.get(`/recipies/${recipie_id}`).then(({ data }) => {
+    return data;
+  });
+};

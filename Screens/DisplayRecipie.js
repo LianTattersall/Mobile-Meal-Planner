@@ -13,6 +13,7 @@ import { formatIngredients } from "../utils/formatIngredients";
 import AddToCalendar from "../Components/AddToCalendar";
 import EditMeal from "../Components/EditMeal";
 import IngredientsSection from "../Components/IngredientsSection";
+import { getUserRecipieById } from "../utils/api";
 
 export default function DisplayRecipie({ navigation, route }) {
   const { param, recipie_id, freeMealApi, meal } = route.params;
@@ -26,6 +27,12 @@ export default function DisplayRecipie({ navigation, route }) {
         setLoading(false);
         setRecipie(data.meals[0]);
         setIgredients(formatIngredients(data.meals[0]));
+      });
+    } else {
+      getUserRecipieById(route.params.recipie_id).then((data) => {
+        setLoading(false);
+        setRecipie(data.recipie);
+        setIgredients(data.recipie.ingredients);
       });
     }
   }, []);
@@ -71,8 +78,32 @@ export default function DisplayRecipie({ navigation, route }) {
     </View>
   );
 
+  const UserRecipieComponent = (
+    <View style={styles.background}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.header}>{recipie.recipie_name}</Text>
+        <Image source={{ uri: recipie.image_url }} style={styles.image}></Image>
+        <IngredientsSection ingredients={ingredients} />
+        <Text style={styles.strInstructions}>{recipie.method}</Text>
+        {param === "fromCalendar" ? (
+          <EditMeal navigation={navigation} meal={meal} />
+        ) : (
+          <AddToCalendar
+            meal={meal}
+            recipie_id={recipie.recipie_id}
+            my_recipie={true}
+            recipie_name={recipie.recipie_name}
+            navigation={navigation}
+          />
+        )}
+      </ScrollView>
+    </View>
+  );
+
   if (freeMealApi) {
     return freeMealApiRecipie;
+  } else {
+    return UserRecipieComponent;
   }
 }
 
